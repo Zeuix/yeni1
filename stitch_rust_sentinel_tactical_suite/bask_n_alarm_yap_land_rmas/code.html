@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>STICK AI | Baskın Alarmı Yapılandırması</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#201f1f",
+                        "on-tertiary-fixed": "#001d31",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#004b73",
+                        "primary": "#ffb783",
+                        "secondary-fixed": "#ffdad5",
+                        "surface-variant": "#353534",
+                        "on-secondary": "#690001",
+                        "surface-bright": "#393939",
+                        "surface-tint": "#ffb783",
+                        "inverse-surface": "#e5e2e1",
+                        "inverse-on-surface": "#313030",
+                        "outline-variant": "#564337",
+                        "on-error": "#690005",
+                        "secondary-container": "#950c09",
+                        "on-primary": "#4f2500",
+                        "on-tertiary-container": "#003452",
+                        "tertiary-container": "#3fa0e4",
+                        "primary-fixed": "#ffdcc5",
+                        "tertiary-fixed": "#cce5ff",
+                        "primary-fixed-dim": "#ffb783",
+                        "on-primary-fixed-variant": "#713700",
+                        "surface-container-low": "#1c1b1b",
+                        "on-surface-variant": "#dcc1b1",
+                        "on-secondary-fixed": "#410000",
+                        "surface": "#131313",
+                        "error-container": "#93000a",
+                        "secondary": "#ffb4a9",
+                        "on-secondary-container": "#ff9f91",
+                        "background": "#131313",
+                        "tertiary": "#92ccff",
+                        "on-background": "#e5e2e1",
+                        "surface-container-high": "#2a2a2a",
+                        "inverse-primary": "#944a00",
+                        "on-surface": "#e5e2e1",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container-highest": "#353534",
+                        "on-primary-container": "#502600",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#92ccff",
+                        "secondary-fixed-dim": "#ffb4a9",
+                        "on-secondary-fixed-variant": "#910807",
+                        "surface-dim": "#131313",
+                        "primary-container": "#e67e22",
+                        "on-primary-fixed": "#301400",
+                        "outline": "#a48c7d",
+                        "on-tertiary": "#003351"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "base": "4px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "xl": "40px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "lg": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "data-lg": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "data-md": ["JetBrains Mono"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "data-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "data-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanline-overlay {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+        .industrial-grid {
+            background-image: radial-gradient(circle, #2E2E2E 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .alert-pulse {
+            animation: pulse-red 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary selection:text-on-primary antialiased industrial-grid min-h-screen">
+<!-- Top AppBar (JSON Authority) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-md h-16 bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant shadow-none">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="sensors">sensors</span>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary tracking-tighter uppercase">STICK AI</h1>
+</div>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-24 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto space-y-lg">
+<!-- Hero Layout: Bento Grid Style -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Global Killswitch & Status -->
+<section class="md:col-span-8 bg-surface-container border border-outline-variant p-md relative overflow-hidden">
+<div class="absolute top-0 right-0 p-base">
+<div class="flex items-center gap-xs bg-error-container/20 px-sm py-xs border border-error/20">
+<div class="w-2 h-2 rounded-full bg-error alert-pulse"></div>
+<span class="font-label-caps text-error text-[10px] uppercase">BASKIN ALARMI: ETKİN</span>
+</div>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+                    Baskın Alarmı Yapılandırması
+                </h2>
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between p-md bg-surface-container-low border border-outline-variant/30 rounded-lg group hover:border-primary/50 transition-colors">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Rust+ Webhook Dinleyici</h3>
+<p class="text-on-surface-variant font-body-md mt-xs max-w-md">Akıllı alarmları Rust+ mobil uygulaması üzerinden güvenli WebSocket entegrasyonu ile doğrudan senkronize edin.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer mt-md md:mt-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-14 h-7 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="mt-lg">
+<button class="w-full bg-primary-container text-on-primary-container font-label-caps text-label-caps py-md uppercase flex items-center justify-center gap-sm active:scale-95 transition-transform" id="test-alert-btn">
+<span class="material-symbols-outlined" data-icon="ring_volume">ring_volume</span>
+                        KRİTİK UYARI HATTI TESTİ
+                    </button>
+</div>
+</section>
+<!-- Quick Data Visualization -->
+<div class="md:col-span-4 bg-surface-container-highest border border-outline-variant relative group overflow-hidden">
+<div class="absolute inset-0 scanline-overlay opacity-20"></div>
+<div class="p-md h-full flex flex-col justify-between">
+<div>
+<span class="font-label-caps text-primary text-[10px] block mb-xs">SİSTEM ÇALIŞMA SÜRESİ</span>
+<div class="font-data-lg text-headline-lg text-primary">99.98<span class="text-on-surface-variant">%</span></div>
+</div>
+<div class="mt-md">
+<span class="font-label-caps text-on-surface-variant text-[10px] block mb-xs">AKTİF DİNLEYİCİLER</span>
+<div class="flex gap-base">
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-surface-variant"></div>
+<div class="h-1 flex-1 bg-surface-variant"></div>
+</div>
+</div>
+<div class="mt-lg flex items-center justify-between">
+<span class="font-body-md text-on-surface-variant italic">Güvenli Proxy: London-1</span>
+<span class="material-symbols-outlined text-primary" data-icon="shield">shield</span>
+</div>
+</div>
+</div>
+<!-- Active Alarms (Entity ID List) -->
+<section class="md:col-span-12 bg-surface-container border border-outline-variant">
+<div class="px-md py-sm bg-surface-variant/30 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-label-caps text-label-caps text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm" data-icon="list">list</span>
+                        Aktif Alarmlar ve Varlık İzleyiciler
+                    </h3>
+<button class="text-primary font-label-caps text-[10px] hover:underline transition-all">YENİ VARLIK EKLE</button>
+</div>
+<div class="divide-y divide-outline-variant">
+<div class="p-md flex flex-wrap md:flex-nowrap items-center justify-between hover:bg-white/5 transition-colors group">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-surface-container-high border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="sensors">sensors</span>
+</div>
+<div>
+<div class="font-data-md text-on-surface">MAIN_BASE_FRONT_DOOR</div>
+<div class="font-data-md text-[11px] text-on-surface-variant uppercase tracking-widest">ID: 88293-AX1</div>
+</div>
+</div>
+<div class="flex items-center gap-lg mt-sm md:mt-0">
+<span class="font-label-caps text-primary text-[10px] bg-primary/10 px-sm py-xs border border-primary/20">DURUM: CANLI</span>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" data-icon="delete">delete</span>
+</div>
+</div>
+<div class="p-md flex flex-wrap md:flex-nowrap items-center justify-between hover:bg-white/5 transition-colors group">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-surface-container-high border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="sensors">sensors</span>
+</div>
+<div>
+<div class="font-data-md text-on-surface">TC_ROOM_STASH_SENS</div>
+<div class="font-data-md text-[11px] text-on-surface-variant uppercase tracking-widest">ID: 88294-AX2</div>
+</div>
+</div>
+<div class="flex items-center gap-lg mt-sm md:mt-0">
+<span class="font-label-caps text-primary text-[10px] bg-primary/10 px-sm py-xs border border-primary/20">DURUM: CANLI</span>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" data-icon="delete">delete</span>
+</div>
+</div>
+<div class="p-md flex flex-wrap md:flex-nowrap items-center justify-between hover:bg-white/5 transition-colors group">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-surface-container-high border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary" data-icon="warning">warning</span>
+</div>
+<div>
+<div class="font-data-md text-on-surface">EXTERNAL_WALL_SENS_04</div>
+<div class="font-data-md text-[11px] text-on-secondary uppercase tracking-widest">ID: 10291-ZZ4</div>
+</div>
+</div>
+<div class="flex items-center gap-lg mt-sm md:mt-0">
+<span class="font-label-caps text-on-secondary text-[10px] bg-secondary-container/20 px-sm py-xs border border-on-secondary/20">ÇEVRİMDIŞI: SİNYAL YOK</span>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" data-icon="refresh">refresh</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Notification Pipeline Section -->
+<section class="md:col-span-12">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-md px-base border-l-2 border-primary">Bildirim Hattı</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- WhatsApp Integration -->
+<div class="bg-surface-container border border-outline-variant p-md flex flex-col justify-between group hover:border-primary/40 transition-colors">
+<div class="flex justify-between">
+<div class="w-12 h-12 bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="chat">chat</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="mt-lg">
+<h4 class="font-headline-sm text-on-surface">WhatsApp Klan Grubu</h4>
+<p class="text-on-surface-variant text-body-md mt-sm">Kritik baskın uyarılarını ve varlık günlüklerini paylaşılan "Vanguard Elite" klan grubuna anında yayınlar.</p>
+</div>
+</div>
+<!-- VoIP Voice Call -->
+<div class="bg-surface-container border border-outline-variant p-md flex flex-col justify-between group hover:border-primary/40 transition-colors">
+<div class="flex justify-between">
+<div class="w-12 h-12 bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="call">call</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="mt-lg">
+<h4 class="font-headline-sm text-on-surface">Otomatik VoIP Sesli Çağrı</h4>
+<p class="text-on-surface-variant text-body-md mt-sm">En yüksek kademe. Algılama 10 saniyeden uzun sürerse kayıtlı cep telefonu numaranıza otomatik bir telefon araması başlatır.</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Navigation Bar (JSON Authority) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-stretch h-16 bg-surface-container dark:bg-surface-container border-t border-outline-variant dark:border-outline-variant">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-base py-sm hover:bg-white/5 transition-all active:bg-primary-container/20 duration-75" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-label-caps text-[10px] uppercase">Panel</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-base py-sm hover:bg-white/5 transition-all active:bg-primary-container/20 duration-75" href="#">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+<span class="font-label-caps text-[10px] uppercase">Alarmlar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-base py-sm hover:bg-white/5 transition-all active:bg-primary-container/20 duration-75" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-caps text-[10px] uppercase">Rehberler</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary border-l-2 border-primary bg-primary/10 px-base py-sm hover:bg-white/5 transition-all active:bg-primary-container/20 duration-75" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-caps text-[10px] uppercase">Ayarlar</span>
+</a>
+</nav>
+<!-- Overlay: VoIP Call Interface -->
+<div class="fixed inset-0 z-[100] bg-background/95 backdrop-blur-md hidden flex flex-col items-center justify-center p-xl" id="call-overlay">
+<div class="max-w-sm w-full space-y-xl text-center">
+<div class="relative inline-block">
+<div class="absolute inset-0 bg-primary/20 rounded-full animate-ping"></div>
+<div class="relative w-32 h-32 bg-primary rounded-full flex items-center justify-center shadow-xl shadow-primary/20">
+<span class="material-symbols-outlined text-on-primary text-6xl" data-icon="call">call</span>
+</div>
+</div>
+<div class="space-y-sm">
+<h2 class="font-headline-lg text-headline-lg text-on-surface uppercase tracking-tighter">KRİTİK UYARI</h2>
+<p class="font-data-md text-primary animate-pulse">VOIP YÜKSELTME DEVAM EDİYOR...</p>
+<p class="text-on-surface-variant font-body-lg">Kaynak: MAIN_BASE_TC_ROOM</p>
+</div>
+<div class="pt-xl flex gap-lg justify-center">
+<button class="w-16 h-16 bg-error-container text-on-error-container rounded-full flex items-center justify-center active:scale-90 transition-transform" id="end-call-btn">
+<span class="material-symbols-outlined text-3xl" data-icon="call_end">call_end</span>
+</button>
+<button class="w-16 h-16 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="mic_off">mic_off</span>
+</button>
+</div>
+</div>
+<div class="absolute bottom-xl w-full text-center px-md">
+<p class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-[0.3em]">Stick AI Güvenli Bağlantı Aktif</p>
+</div>
+</div>
+<script>
+        const testBtn = document.getElementById('test-alert-btn');
+        const endCallBtn = document.getElementById('end-call-btn');
+        const overlay = document.getElementById('call-overlay');
+
+        testBtn.addEventListener('click', () => {
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            // Simulate start of call audio/vibration pattern
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate([500, 200, 500, 200, 500]);
+            }
+        });
+
+        endCallBtn.addEventListener('click', () => {
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+        });
+
+        // Simple animation for active status bar
+        setInterval(() => {
+            const bars = document.querySelectorAll('.bg-surface-variant');
+            if (bars.length > 0) {
+                const randomBar = bars[Math.floor(Math.random() * bars.length)];
+                if (randomBar.classList.contains('bg-surface-variant')) {
+                    randomBar.classList.replace('bg-surface-variant', 'bg-primary');
+                    setTimeout(() => {
+                        randomBar.classList.replace('bg-primary', 'bg-surface-variant');
+                    }, 1500);
+                }
+            }
+        }, 3000);
+    </script>
+</body></html>

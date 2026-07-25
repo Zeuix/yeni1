@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>STICK AI | Baskın Hesaplayıcı</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#201f1f",
+                    "on-tertiary-fixed": "#001d31",
+                    "error": "#ffb4ab",
+                    "on-tertiary-fixed-variant": "#004b73",
+                    "primary": "#ffb783",
+                    "secondary-fixed": "#ffdad5",
+                    "surface-variant": "#353534",
+                    "on-secondary": "#690001",
+                    "surface-bright": "#393939",
+                    "surface-tint": "#ffb783",
+                    "inverse-surface": "#e5e2e1",
+                    "inverse-on-surface": "#313030",
+                    "outline-variant": "#564337",
+                    "on-error": "#690005",
+                    "secondary-container": "#950c09",
+                    "on-primary": "#4f2500",
+                    "on-tertiary-container": "#003452",
+                    "tertiary-container": "#3fa0e4",
+                    "primary-fixed": "#ffdcc5",
+                    "tertiary-fixed": "#cce5ff",
+                    "primary-fixed-dim": "#ffb783",
+                    "on-primary-fixed-variant": "#713700",
+                    "surface-container-low": "#1c1b1b",
+                    "on-surface-variant": "#dcc1b1",
+                    "on-secondary-fixed": "#410000",
+                    "surface": "#131313",
+                    "error-container": "#93000a",
+                    "secondary": "#ffb4a9",
+                    "on-secondary-container": "#ff9f91",
+                    "background": "#131313",
+                    "tertiary": "#92ccff",
+                    "on-background": "#e5e2e1",
+                    "surface-container-high": "#2a2a2a",
+                    "inverse-primary": "#944a00",
+                    "on-surface": "#e5e2e1",
+                    "surface-container-lowest": "#0e0e0e",
+                    "surface-container-highest": "#353534",
+                    "on-primary-container": "#502600",
+                    "on-error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#92ccff",
+                    "secondary-fixed-dim": "#ffb4a9",
+                    "on-secondary-fixed-variant": "#910807",
+                    "surface-dim": "#131313",
+                    "primary-container": "#e67e22",
+                    "on-primary-fixed": "#301400",
+                    "outline": "#a48c7d",
+                    "on-tertiary": "#003351"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "base": "4px",
+                    "md": "16px",
+                    "xs": "4px",
+                    "xl": "40px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "lg": "24px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "data-lg": ["JetBrains Mono"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-caps": ["JetBrains Mono"],
+                    "data-md": ["JetBrains Mono"],
+                    "headline-sm": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "data-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "data-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tactical-border {
+            border-image: linear-gradient(to bottom right, #ffb783 0%, #ffb783 5%, transparent 5%, transparent 95%, #ffb783 95%, #ffb783 100%) 1;
+        }
+        .diagonal-bg {
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 183, 131, 0.05) 10px, rgba(255, 183, 131, 0.05) 20px);
+        }
+        .active-selection {
+            box-shadow: inset 2px 0 0 0 #ffb783;
+            background-color: rgba(255, 183, 131, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-md h-16 bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="sensors">sensors</span>
+<span class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary tracking-tighter uppercase">STICK AI</span>
+</div>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/50 transition-colors p-base rounded cursor-pointer" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+</div>
+</header>
+<main class="pt-24 pb-24 px-md max-w-lg mx-auto space-y-lg">
+<!-- Target Selection Section -->
+<section>
+<div class="flex items-center justify-between mb-md">
+<h2 class="font-label-caps text-label-caps uppercase text-on-surface-variant">HEDEF YAPIYI SEÇİN</h2>
+<span class="font-data-md text-data-md text-primary bg-primary/10 px-sm py-xs">H-PRECISION</span>
+</div>
+<div class="grid grid-cols-2 gap-base">
+<!-- Target Tiles -->
+<button class="target-tile group flex flex-col items-start p-md bg-surface-container border border-outline-variant hover:border-primary transition-all duration-150 active:scale-95 text-left active-selection" onclick="selectTarget(this, 'Odun')">
+<span class="material-symbols-outlined text-primary mb-sm" data-icon="park">park</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant group-hover:text-primary">ODUN</span>
+</button>
+<button class="target-tile group flex flex-col items-start p-md bg-surface-container border border-outline-variant hover:border-primary transition-all duration-150 active:scale-95 text-left" onclick="selectTarget(this, 'Taş')">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary mb-sm" data-icon="landscape">landscape</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant group-hover:text-primary">TAŞ</span>
+</button>
+<button class="target-tile group flex flex-col items-start p-md bg-surface-container border border-outline-variant hover:border-primary transition-all duration-150 active:scale-95 text-left" onclick="selectTarget(this, 'Metal')">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary mb-sm" data-icon="shield">shield</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant group-hover:text-primary">METAL</span>
+</button>
+<button class="target-tile group flex flex-col items-start p-md bg-surface-container border border-outline-variant hover:border-primary transition-all duration-150 active:scale-95 text-left" onclick="selectTarget(this, 'Zırhlı')">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary mb-sm" data-icon="token">token</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant group-hover:text-primary">ZIRHLI</span>
+</button>
+<button class="target-tile col-span-2 group flex items-center justify-between p-md bg-surface-container border border-outline-variant hover:border-primary transition-all duration-150 active:scale-95 text-left" onclick="selectTarget(this, 'Garaj Kapısı')">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary" data-icon="garage">garage</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant group-hover:text-primary">GARAJ KAPISI</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- Explosive Type Selector -->
+<section class="space-y-md">
+<h2 class="font-label-caps text-label-caps uppercase text-on-surface-variant">PATLAYICI SEÇİMİ</h2>
+<div class="space-y-sm">
+<!-- C4 Row -->
+<div class="flex items-center justify-between p-md bg-surface-container-low border border-outline-variant">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="timer">timer</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface">ZAMANLI PATLAYICI (C4)</p>
+<p class="font-body-md text-xs text-on-surface-variant">Maksimum Verimlilik</p>
+</div>
+</div>
+<div class="flex items-center bg-surface-container-highest border border-outline-variant p-xs">
+<button class="w-8 h-8 flex items-center justify-center text-primary active:scale-90" onclick="updateQty('c4', -1)">
+<span class="material-symbols-outlined text-md" data-icon="remove">remove</span>
+</button>
+<span class="w-12 text-center font-data-md text-primary" id="c4-qty">0</span>
+<button class="w-8 h-8 flex items-center justify-center text-primary active:scale-90" onclick="updateQty('c4', 1)">
+<span class="material-symbols-outlined text-md" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Rocket Row -->
+<div class="flex items-center justify-between p-md bg-surface-container-low border border-outline-variant">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface">ROKET</p>
+<p class="font-body-md text-xs text-on-surface-variant">Alan Hasarı</p>
+</div>
+</div>
+<div class="flex items-center bg-surface-container-highest border border-outline-variant p-xs">
+<button class="w-8 h-8 flex items-center justify-center text-primary active:scale-90" onclick="updateQty('rocket', -1)">
+<span class="material-symbols-outlined text-md" data-icon="remove">remove</span>
+</button>
+<span class="w-12 text-center font-data-md text-primary" id="rocket-qty">0</span>
+<button class="w-8 h-8 flex items-center justify-center text-primary active:scale-90" onclick="updateQty('rocket', 1)">
+<span class="material-symbols-outlined text-md" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Satchel Row -->
+<div class="flex items-center justify-between p-md bg-surface-container-low border border-outline-variant">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="backpack">backpack</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface">EL YAPIMI PATLAYICI</p>
+<p class="font-body-md text-xs text-on-surface-variant">Güvenilmez Fünye</p>
+</div>
+</div>
+<div class="flex items-center bg-surface-container-highest border border-outline-variant p-xs">
+<button class="w-8 h-8 flex items-center justify-center text-primary active:scale-90" onclick="updateQty('satchel', -1)">
+<span class="material-symbols-outlined text-md" data-icon="remove">remove</span>
+</button>
+<span class="w-12 text-center font-data-md text-primary" id="satchel-qty">0</span>
+<button class="w-8 h-8 flex items-center justify-center text-primary active:scale-90" onclick="updateQty('satchel', 1)">
+<span class="material-symbols-outlined text-md" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Explosive Ammo Row -->
+<div class="flex items-center justify-between p-md bg-surface-container-low border border-outline-variant">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="straighten">straighten</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface">PATLAYICI MERMİ</p>
+<p class="font-body-md text-xs text-on-surface-variant">Sessiz Baskın</p>
+</div>
+</div>
+<div class="flex items-center bg-surface-container-highest border border-outline-variant p-xs">
+<button class="w-8 h-8 flex items-center justify-center text-primary active:scale-90" onclick="updateQty('ammo', -1)">
+<span class="material-symbols-outlined text-md" data-icon="remove">remove</span>
+</button>
+<span class="w-12 text-center font-data-md text-primary" id="ammo-qty">0</span>
+<button class="w-8 h-8 flex items-center justify-center text-primary active:scale-90" onclick="updateQty('ammo', 1)">
+<span class="material-symbols-outlined text-md" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Calculate Button -->
+<button class="w-full py-lg bg-primary text-on-primary font-headline-sm uppercase tracking-widest flex items-center justify-center gap-sm transition-all active:scale-95 hover:brightness-110" id="calc-btn" onclick="calculateRaid()">
+<span class="material-symbols-outlined" data-icon="calculate">calculate</span>
+            HESAPLA
+        </button>
+<!-- Results Panel -->
+<section class="hidden opacity-0 transform translate-y-4 transition-all duration-500" id="results-panel">
+<div class="p-md bg-surface-container tactical-border border-2 relative overflow-hidden diagonal-bg">
+<div class="absolute top-0 right-0 p-xs bg-primary text-on-primary font-label-caps text-[10px]">DOĞRULANMIŞ VERİ</div>
+<h3 class="font-label-caps text-label-caps text-primary mb-md">KAYNAK GEREKSİNİMLERİ</h3>
+<div class="grid grid-cols-1 gap-sm">
+<div class="flex justify-between items-center border-b border-outline-variant/30 pb-sm">
+<span class="font-body-md text-on-surface-variant">Toplam Kükürt</span>
+<span class="font-data-lg text-headline-sm text-primary" id="res-sulfur">0</span>
+</div>
+<div class="flex justify-between items-center border-b border-outline-variant/30 pb-sm">
+<span class="font-body-md text-on-surface-variant">Toplam Barut</span>
+<span class="font-data-lg text-headline-sm text-primary" id="res-gp">0</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex flex-col">
+<span class="font-body-md text-on-surface-variant">Yerleştirme Süresi</span>
+<span class="text-[10px] text-error font-label-caps">TAHMİNİ ARALIK</span>
+</div>
+<span class="font-data-lg text-headline-sm text-on-surface" id="res-time">0s</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-stretch h-16 bg-surface-container dark:bg-surface-container border-t border-outline-variant dark:border-outline-variant">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-base py-sm hover:bg-white/5 transition-all active:bg-primary-container/20 duration-75" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="grid_view">grid_view</span>
+<span class="font-label-caps text-[10px] uppercase">Panel</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary border-l-2 border-primary bg-primary/10 px-base py-sm hover:bg-white/5 transition-all active:bg-primary-container/20 duration-75" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="notifications_active">notifications_active</span>
+<span class="font-label-caps text-[10px] uppercase">Alarmlar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-base py-sm hover:bg-white/5 transition-all active:bg-primary-container/20 duration-75" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="map">map</span>
+<span class="font-label-caps text-[10px] uppercase">Rehberler</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-base py-sm hover:bg-white/5 transition-all active:bg-primary-container/20 duration-75" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="settings">settings</span>
+<span class="font-label-caps text-[10px] uppercase">Ayarlar</span>
+</a>
+</nav>
+<script>
+        let selectedTarget = 'Odun';
+        const quantities = {
+            c4: 0,
+            rocket: 0,
+            satchel: 0,
+            ammo: 0
+        };
+
+        function selectTarget(el, name) {
+            document.querySelectorAll('.target-tile').forEach(tile => {
+                tile.classList.remove('active-selection');
+                tile.querySelector('.material-symbols-outlined').classList.replace('text-primary', 'text-on-surface-variant');
+                tile.querySelector('span:last-child').classList.replace('text-primary', 'text-on-surface-variant');
+            });
+            el.classList.add('active-selection');
+            el.querySelector('.material-symbols-outlined').classList.replace('text-on-surface-variant', 'text-primary');
+            el.querySelector('span:last-child').classList.replace('text-on-surface-variant', 'text-primary');
+            selectedTarget = name;
+        }
+
+        function updateQty(type, delta) {
+            quantities[type] = Math.max(0, quantities[type] + delta);
+            document.getElementById(`${type}-qty`).innerText = quantities[type];
+            
+            // Haptic feedback simulation
+            if ('vibrate' in navigator) navigator.vibrate(20);
+        }
+
+        function calculateRaid() {
+            const btn = document.getElementById('calc-btn');
+            const results = document.getElementById('results-panel');
+            
+            // Loading state
+            btn.innerHTML = `<span class="material-symbols-outlined animate-spin" data-icon="progress_activity">progress_activity</span> ANALİZ EDİLİYOR...`;
+            btn.disabled = true;
+
+            setTimeout(() => {
+                // Mock calculation logic
+                const sulfur = (quantities.c4 * 2200) + (quantities.rocket * 1400) + (quantities.satchel * 480) + (quantities.ammo * 25);
+                const gp = (quantities.c4 * 1000) + (quantities.rocket * 650) + (quantities.satchel * 240) + (quantities.ammo * 5);
+                const time = (quantities.c4 * 3) + (quantities.rocket * 4) + (quantities.satchel * 8) + (quantities.ammo * 0.5);
+
+                document.getElementById('res-sulfur').innerText = sulfur.toLocaleString();
+                document.getElementById('res-gp').innerText = gp.toLocaleString();
+                document.getElementById('res-time').innerText = Math.ceil(time) + 's';
+
+                results.classList.remove('hidden');
+                setTimeout(() => {
+                    results.classList.remove('opacity-0', 'translate-y-4');
+                }, 50);
+
+                btn.innerHTML = `<span class="material-symbols-outlined" data-icon="calculate">calculate</span> HESAPLA`;
+                btn.disabled = false;
+                
+                // Scroll to results
+                results.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }, 800);
+        }
+    </script>
+</body></html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>STICK AI - Rust Tactical Utilities</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .industrial-grid {
+            background-image: radial-gradient(#2E2E2E 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 183, 131, 0.1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            animation: scan 8s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        .status-pulse {
+            animation: pulse-green 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .diagonal-stripes {
+            background: repeating-linear-gradient(
+                45deg,
+                #1A1A1A,
+                #1A1A1A 10px,
+                #201f1f 10px,
+                #201f1f 20px
+            );
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#201f1f",
+                        "on-tertiary-fixed": "#001d31",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#004b73",
+                        "primary": "#ffb783",
+                        "secondary-fixed": "#ffdad5",
+                        "surface-variant": "#353534",
+                        "on-secondary": "#690001",
+                        "surface-bright": "#393939",
+                        "surface-tint": "#ffb783",
+                        "inverse-surface": "#e5e2e1",
+                        "inverse-on-surface": "#313030",
+                        "outline-variant": "#564337",
+                        "on-error": "#690005",
+                        "secondary-container": "#950c09",
+                        "on-primary": "#4f2500",
+                        "on-tertiary-container": "#003452",
+                        "tertiary-container": "#3fa0e4",
+                        "primary-fixed": "#ffdcc5",
+                        "tertiary-fixed": "#cce5ff",
+                        "primary-fixed-dim": "#ffb783",
+                        "on-primary-fixed-variant": "#713700",
+                        "surface-container-low": "#1c1b1b",
+                        "on-surface-variant": "#dcc1b1",
+                        "on-secondary-fixed": "#410000",
+                        "surface": "#131313",
+                        "error-container": "#93000a",
+                        "secondary": "#ffb4a9",
+                        "on-secondary-container": "#ff9f91",
+                        "background": "#131313",
+                        "tertiary": "#92ccff",
+                        "on-background": "#e5e2e1",
+                        "surface-container-high": "#2a2a2a",
+                        "inverse-primary": "#944a00",
+                        "on-surface": "#e5e2e1",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container-highest": "#353534",
+                        "on-primary-container": "#502600",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#92ccff",
+                        "secondary-fixed-dim": "#ffb4a9",
+                        "on-secondary-fixed-variant": "#910807",
+                        "surface-dim": "#131313",
+                        "primary-container": "#e67e22",
+                        "on-primary-fixed": "#301400",
+                        "outline": "#a48c7d",
+                        "on-tertiary": "#003351"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "base": "4px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "xl": "40px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "lg": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "data-lg": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "data-md": ["JetBrains Mono"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "data-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "data-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="industrial-grid min-h-screen pb-24">
+<div class="scanline"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-md h-16 bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">sensors</span>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary tracking-tighter uppercase">STICK AI</h1>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex items-center bg-surface-container-low px-sm py-base rounded border border-outline-variant">
+<div class="w-2 h-2 rounded-full bg-emerald-500 mr-2 status-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
+<span class="font-label-caps text-[10px] text-on-surface uppercase tracking-widest">Rust+ BAĞLI</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/50 transition-colors p-base rounded active:scale-95 duration-100">signal_cellular_alt</button>
+</div>
+</header>
+<main class="pt-24 px-md max-w-7xl mx-auto">
+<!-- Hero Status Banner -->
+<section class="mb-lg">
+<div class="border border-outline-variant bg-surface-container p-md relative overflow-hidden">
+<div class="absolute top-0 right-0 p-sm opacity-20">
+<span class="material-symbols-outlined text-[120px]">precision_manufacturing</span>
+</div>
+<div class="relative z-10">
+<p class="font-label-caps text-primary text-label-caps mb-xs">SİSTEM ÖZETİ</p>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-sm">TAKTİKSEL VERİLER</h2>
+<div class="flex flex-wrap gap-md mt-md">
+<div class="flex flex-col border-l-2 border-primary pl-md">
+<span class="font-label-caps text-[10px] text-on-surface-variant">AKTİF OYUNCU</span>
+<span class="font-data-lg text-data-lg text-on-surface">248 / 300</span>
+</div>
+<div class="flex flex-col border-l-2 border-primary pl-md">
+<span class="font-label-caps text-[10px] text-on-surface-variant">SIFIRLANMA SÜRESİ</span>
+<span class="font-data-lg text-data-lg text-on-surface">2G 14S 12D</span>
+</div>
+<div class="flex flex-col border-l-2 border-primary pl-md">
+<span class="font-label-caps text-[10px] text-on-surface-variant">BAKIM</span>
+<span class="font-data-lg text-data-lg text-on-surface">18S KALDI</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Modules -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Smelting & Ores -->
+<div class="group border border-outline-variant bg-surface-container flex flex-col hover:border-primary transition-all duration-300">
+<div class="diagonal-stripes h-1 w-full group-hover:bg-primary transition-colors"></div>
+<div class="p-md flex-1">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-primary/10 border border-primary/20 rounded">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">calculate</span>
+</div>
+<span class="font-label-caps text-[10px] bg-surface-variant px-base py-[2px] text-on-surface-variant border border-outline-variant">AKTİF</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-base">Eritme ve Madenler</h3>
+<p class="font-body-md text-on-surface-variant mb-md">Kömür çıktısını ve odun gereksinimlerini hesaplayın.</p>
+<div class="mt-auto pt-md border-t border-outline-variant/30 flex justify-between items-center">
+<span class="font-data-md text-primary text-[12px]">32k Metal İşlendi</span>
+<button class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">arrow_forward_ios</button>
+</div>
+</div>
+</div>
+<!-- Electricity & Circuits -->
+<div class="group border border-outline-variant bg-surface-container flex flex-col hover:border-primary transition-all duration-300">
+<div class="diagonal-stripes h-1 w-full group-hover:bg-primary transition-colors"></div>
+<div class="p-md flex-1">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-primary/10 border border-primary/20 rounded">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<span class="font-label-caps text-[10px] bg-secondary-container/20 px-base py-[2px] text-secondary border border-secondary/30">UYARI</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-base">Elektrik ve Devreler</h3>
+<p class="font-body-md text-on-surface-variant mb-md">Devre planlayıcı ve pil ömrü boşaltma simülatörü.</p>
+<div class="mt-auto pt-md border-t border-outline-variant/30 flex justify-between items-center">
+<span class="font-data-md text-secondary text-[12px]">Düşük Pil: 12%</span>
+<button class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">arrow_forward_ios</button>
+</div>
+</div>
+</div>
+<!-- Weapons & Ammo -->
+<div class="group border border-outline-variant bg-surface-container flex flex-col hover:border-primary transition-all duration-300 lg:row-span-2">
+<div class="diagonal-stripes h-1 w-full group-hover:bg-primary transition-colors"></div>
+<div class="p-md flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-primary/10 border border-primary/20 rounded">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">account_tree</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-base">Silahlar ve Mühimmat</h3>
+<p class="font-body-md text-on-surface-variant mb-md">Geri tepme desenleri ve mühimmat üretim planları.</p>
+<div class="flex-1 min-h-[120px] bg-surface-container-lowest border border-outline-variant my-md relative overflow-hidden">
+<div class="absolute inset-0 opacity-10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[80px]">person_celebrate</span>
+</div>
+<div class="p-sm flex flex-col gap-sm">
+<div class="flex justify-between border-b border-outline-variant pb-xs">
+<span class="font-label-caps text-[10px] text-on-surface-variant">AK-47</span>
+<span class="font-data-md text-[10px] text-primary">USTALAŞILDI</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-xs">
+<span class="font-label-caps text-[10px] text-on-surface-variant">MP5A4</span>
+<span class="font-data-md text-[10px] text-primary">85%</span>
+</div>
+<div class="flex justify-between">
+<span class="font-label-caps text-[10px] text-on-surface-variant">HMLMG</span>
+<span class="font-data-md text-[10px] text-on-surface-variant">KİLİTLİ</span>
+</div>
+</div>
+</div>
+<button class="w-full py-sm bg-primary text-on-primary font-label-caps text-[12px] uppercase hover:bg-primary-container transition-colors mt-auto">TEKNOLOJİ AĞACINI GÖRÜNTÜLE</button>
+</div>
+</div>
+<!-- Explosives & Raid -->
+<div class="group border border-outline-variant bg-surface-container flex flex-col hover:border-primary transition-all duration-300">
+<div class="diagonal-stripes h-1 w-full group-hover:bg-primary transition-colors"></div>
+<div class="p-md flex-1">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-primary/10 border border-primary/20 rounded">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">explosion</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-base">Patlayıcılar ve Baskın</h3>
+<p class="font-body-md text-on-surface-variant mb-md">Saç metal ve zırhlı yapılar için verimlilik hesaplayıcı.</p>
+<div class="mt-auto pt-md border-t border-outline-variant/30 flex justify-between items-center">
+<span class="font-data-md text-on-surface-variant text-[12px]">C4: 2 Gerekli | Roket: 4 Gerekli</span>
+<button class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">arrow_forward_ios</button>
+</div>
+</div>
+</div>
+<!-- Monuments & Keycards -->
+<div class="group border border-outline-variant bg-surface-container flex flex-col hover:border-primary transition-all duration-300">
+<div class="diagonal-stripes h-1 w-full group-hover:bg-primary transition-colors"></div>
+<div class="p-md flex-1">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-primary/10 border border-primary/20 rounded">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">map</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-base">Anıtlar ve Kartlar</h3>
+<p class="font-body-md text-on-surface-variant mb-md">Anıt başına kart bulmacaları ve ganimet tabloları.</p>
+<div class="mt-auto pt-md border-t border-outline-variant/30 flex justify-between items-center">
+<div class="flex gap-xs">
+<div class="w-3 h-3 bg-emerald-500 rounded-full" title="Yeşil Kart Mevcut"></div>
+<div class="w-3 h-3 bg-blue-500 rounded-full" title="Mavi Kart Mevcut"></div>
+<div class="w-3 h-3 bg-red-500 rounded-full" title="Kırmızı Kart Mevcut"></div>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">arrow_forward_ios</button>
+</div>
+</div>
+</div>
+<!-- Utilities -->
+<div class="group border border-outline-variant bg-surface-container flex flex-col hover:border-primary transition-all duration-300 lg:col-span-2">
+<div class="diagonal-stripes h-1 w-full group-hover:bg-primary transition-colors"></div>
+<div class="p-md flex-1 grid grid-cols-1 md:grid-cols-2 gap-md">
+<div>
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-primary/10 border border-primary/20 rounded">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">videocam</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-base">Araçlar</h3>
+<p class="font-body-md text-on-surface-variant mb-md">CCTV izleme ve akıllı alarm entegrasyonu.</p>
+<div class="flex gap-sm">
+<button class="px-md py-sm border border-outline text-on-surface font-label-caps text-[10px] hover:bg-surface-variant transition-colors uppercase">KAMERALAR</button>
+<button class="px-md py-sm border border-outline text-on-surface font-label-caps text-[10px] hover:bg-surface-variant transition-colors uppercase">ALARMLAR</button>
+</div>
+</div>
+<div class="relative bg-surface-container-lowest border border-outline-variant rounded overflow-hidden">
+<div class="w-full h-full bg-cover bg-center grayscale opacity-50" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBGgv-sMusUcQYYNp8qgKN3Wn04nGs1ysxA4FoeHF-r4C6glfx9iTfZO1CM1EYZQvDy26klSRWbNAHM0r11LUWvTvAyuQ-gxuOi40fzG26tPni2V3D82eB6NJkX90GxF9heS3N19FvQLJ5cLg9Oxf-vF7DdmG9qVa7j6kDzrDt5TRYS-_-OZhvLB6zh4XvexKfsCX-yYghd8HN53XhYQStlG1VZ30sjWc7Oz7-3NFMflgat0yOpEXTvVg')"></div>
+<div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
+<div class="absolute top-sm left-sm flex items-center gap-xs bg-black/60 px-xs py-[2px] rounded">
+<div class="w-1.5 h-1.5 rounded-full bg-red-500 status-pulse"></div>
+<span class="font-label-caps text-[8px] text-white">CANLI YAYIN: EXTERIOR_GATE_01</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-stretch h-16 bg-surface-container dark:bg-surface-container border-t border-outline-variant dark:border-outline-variant">
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary border-l-2 border-primary bg-primary/10 px-base py-sm flex-1 group transition-all" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform">grid_view</span>
+<span class="font-label-caps text-[10px] uppercase">Panel</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-base py-sm flex-1 group hover:bg-white/5 transition-all active:bg-primary-container/20 duration-75" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform">notifications_active</span>
+<span class="font-label-caps text-[10px] uppercase">Alarmlar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-base py-sm flex-1 group hover:bg-white/5 transition-all active:bg-primary-container/20 duration-75" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform">map</span>
+<span class="font-label-caps text-[10px] uppercase">Rehberler</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-base py-sm flex-1 group hover:bg-white/5 transition-all active:bg-primary-container/20 duration-75" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform">settings</span>
+<span class="font-label-caps text-[10px] uppercase">Ayarlar</span>
+</a>
+</nav>
+<!-- FAB for Quick Calc -->
+<button class="fixed bottom-24 right-md w-14 h-14 bg-primary text-on-primary rounded-lg shadow-xl flex items-center justify-center border-t border-l border-white/20 active:scale-95 transition-all z-40 group">
+<span class="material-symbols-outlined text-[28px] group-hover:rotate-90 transition-transform">add</span>
+</button>
+<script>
+        // Micro-interactions for tactile feel
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Subtle feedback can be added here
+            });
+        });
+        
+        // Random data flicker for tech feel
+        setInterval(() => {
+            const elements = document.querySelectorAll('.font-data-lg');
+            const randomElement = elements[Math.floor(Math.random() * elements.length)];
+            if (randomElement) {
+                randomElement.classList.add('opacity-50');
+                setTimeout(() => {
+                    randomElement.classList.remove('opacity-50');
+                }, 50);
+            }
+        }, 3000);
+    </script>
+</body></html>
