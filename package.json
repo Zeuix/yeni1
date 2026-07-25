@@ -1,0 +1,21 @@
+{
+  "name": "yeni1",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node scripts/base.js",
+    "validate": "node scripts/base.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix && prettier --write \"**/*.js\"",
+    "test": "vitest run",
+    "build": "echo \"no build configured yet\"",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "eslint": "^10.7.0",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "prettier": "^3.9.6",
+    "vitest": "^4.1.10"
+  }
+}

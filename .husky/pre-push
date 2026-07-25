@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Current branch name
+current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+if [ -z "$current_branch" ]; then
+  exit 0
+fi
+
+# Block direct push to main or dev
+if [ "$current_branch" = "main" ] || [ "$current_branch" = "dev" ]; then
+  echo "=========================================================="
+  echo "❌ HATA: '$current_branch' dalına doğrudan push yapamazsınız!"
+  echo "yeni1 kuralları gereği doğrudan ana dallara push yasaktır."
+  echo "Lütfen yeni bir dal açın ve Pull Request (PR) oluşturun."
+  echo "Örn: git checkout -b feature/yenilik"
+  echo "=========================================================="
+  exit 1
+fi
+
+echo "🔄 Push öncesi kontroller çalıştırılıyor..."
+
+# Run lint and test
+npm run lint && npm test
+if [ $? -ne 0 ]; then
+  echo "❌ HATA: Kontroller başarısız oldu. Lütfen hataları giderin."
+  exit 1
+fi
+
+exit 0
